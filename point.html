@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>denisavchenko</title>
+    <link rel="stylesheet" href="fonts/fonts">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="//unpkg.com/globe.gl"></script>
+    <script src="//unpkg.com/d3-dsv"></script>
+    <script src="//unpkg.com/index-array-by"></script>
+</head>
+
+<body>
+
+    <header class="header">
+        <div class="header-top">
+            <div class="container">
+                <div class="header-top-row">
+                    <div class="header-top-left">
+                        DENISAVCHENKO
+                    </div>
+                    <div class="header-top-right">
+                        <a href="index.html">Способы визуализации</a>
+                        <a href="works.html">Примеры работ</a>
+                        <a href="about.html">О проекте</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+</header>
+
+
+
+
+    <div id="globeViz"></div>
+
+    <script>
+        // Array of Russian Millionaire Cities with [latitude, longitude], city name, and population
+        const MILLIONAIRE_CITIES = [
+            { lat: 55.7558, lng: 37.6173, name: "Moscow", population: 12506468 },
+            { lat: 59.9343, lng: 30.3351, name: "Saint Petersburg", population: 5384342 },
+            { lat: 55.0084, lng: 82.9357, name: "Novosibirsk", population: 1620162 },
+            { lat: 56.8389, lng: 60.6057, name: "Yekaterinburg", population: 1495066 },
+            { lat: 55.8304, lng: 49.0661, name: "Kazan", population: 1257391 },
+            { lat: 56.2965, lng: 43.9361, name: "Nizhny Novgorod", population: 1220000 },
+            { lat: 55.1644, lng: 61.4368, name: "Chelyabinsk", population: 1202371 },
+            { lat: 53.2415, lng: 50.2212, name: "Samara", population: 1177513 },
+            { lat: 54.9885, lng: 73.3242, name: "Omsk", population: 1165677 },
+            { lat: 47.2357, lng: 39.7015, name: "Rostov-on-Don", population: 1125299 },
+            { lat: 54.7388, lng: 55.9721, name: "Ufa", population: 1122874 },
+            { lat: 56.0153, lng: 92.8932, name: "Krasnoyarsk", population: 1095283 },
+            { lat: 58.0105, lng: 56.2294, name: "Perm", population: 1030000 },
+            { lat: 51.6608, lng: 39.2003, name: "Voronezh", population: 1054537 },
+            { lat: 48.7080, lng: 44.5133, name: "Volgograd", population: 1001879 },
+        ];
+
+        // Function to calculate point size based on population
+        function calculatePointSize(population) {
+            return Math.sqrt(population) * 0.0003; // Increased multiplier for larger dots
+        }
+
+        // Initialize the Globe
+        const myGlobe = Globe()
+            .globeImageUrl('webgl/img/map_texture6.jpg')
+            .backgroundColor('#FFFFFF')
+            .showAtmosphere(false)
+            .labelsData(MILLIONAIRE_CITIES)
+            .labelLat(d => d.lat)
+            .labelLng(d => d.lng)
+            .labelText(d => d.name)
+            .labelSize(d => calculatePointSize(d.population))  // Point size based on population
+            .labelDotRadius(d => calculatePointSize(d.population))  // Dot size based on population
+            .labelColor(() => 'rgba(0, 44, 210, 0.75)')
+            .labelResolution(2)
+            (document.getElementById('globeViz'));
+
+        // Ensure the point of view is set after initialization with a smooth transition
+        setTimeout(() => {
+            myGlobe.pointOfView({ lat: 55.7558, lng: 37.6176, altitude: 1.5 }, 1000);  // Smooth transition over 1 second
+        }, 100); // Small delay to ensure the globe is rendered before moving to the viewpoint
+
+    </script>
+</body>
+</html>

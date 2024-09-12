@@ -1,0 +1,108 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>denisavchenko</title>
+    <link rel="stylesheet" href="fonts/fonts">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="//unpkg.com/globe.gl"></script>
+    <script src="//unpkg.com/d3-dsv"></script>
+    <script src="//unpkg.com/index-array-by"></script>
+
+  
+    <script src="//unpkg.com/globe.gl"></script>
+    <!--<script src="../../dist/globe.gl.js"></script>-->
+  </head>
+  
+  <body>
+
+    <header class="header">
+        <div class="header-top">
+            <div class="container">
+                <div class="header-top-row">
+                    <div class="header-top-left">
+                        DENISAVCHENKO
+                    </div>
+                    <div class="header-top-right">
+                        <a href="index.html">Способы визуализации</a>
+                        <a href="works.html">Примеры работ</a>
+                        <a href="about.html">О проекте</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+</header>
+
+
+
+    <div id="globeViz"></div>
+  
+    <script>
+    // Function to interpolate between two coordinates
+    function interpolateCoordinates(lat1, lng1, lat2, lng2, numSteps) {
+        const latStep = (lat2 - lat1) / numSteps;
+        const lngStep = (lng2 - lng1) / numSteps;
+
+        const path = [];
+        for (let i = 0; i <= numSteps; i++) {
+            const lat = lat1 + latStep * i;
+            const lng = lng1 + lngStep * i;
+            path.push([lat, lng, 0]); // Altitude is kept at 0 for simplicity
+        }
+        return path;
+    }
+
+    // Moscow coordinates
+    const MOSCOW_COORDS = [55.7558, 37.6173];
+
+    // Millionaire cities with their coordinates
+    const MILLIONAIRE_CITIES = [
+        [59.9343, 30.3351],  // Saint Petersburg
+        [55.0084, 82.9357],  // Novosibirsk
+        [56.8389, 60.6057],  // Yekaterinburg
+        [55.8304, 49.0661],  // Kazan
+        [56.2965, 43.9361],  // Nizhny Novgorod
+        [55.1644, 61.4368],  // Chelyabinsk
+        [53.2415, 50.2212],  // Samara
+        [54.9885, 73.3242],  // Omsk
+        [47.2357, 39.7015],  // Rostov-on-Don
+        [54.7388, 55.9721],  // Ufa
+        [56.0153, 92.8932],  // Krasnoyarsk
+        [58.0105, 56.2294],  // Perm
+        [51.6608, 39.2003],  // Voronezh
+        [48.7080, 44.5133],  // Volgograd
+    ];
+
+    const MAX_POINTS_PER_LINE = 100; // Number of steps/segments for each path
+
+    // Generate paths from Moscow to each millionaire city
+    const gData = MILLIONAIRE_CITIES.map(([cityLat, cityLng]) => {
+        return interpolateCoordinates(MOSCOW_COORDS[0], MOSCOW_COORDS[1], cityLat, cityLng, MAX_POINTS_PER_LINE);
+    });
+
+    console.log(gData);
+
+
+  
+      const globe = Globe()
+
+        .globeImageUrl('webgl/img/map_texture6.jpg') // Убедитесь, что изображение шара корректное
+        .backgroundColor('#FFFFFF') // Установка цвета фона на белый
+        .showAtmosphere(false) // Отключение атмосферы, чтобы избежать свечения
+        .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
+        .pathsData(gData)
+        .pathColor(() => ['rgba(0, 44, 210, 0.6)', 'rgba(0, 44, 210, 0.6)'])
+        .pathDashLength(4.01)
+        .pathDashGap(1.01)
+        .pathDashAnimateTime(1000)
+        (document.getElementById('globeViz'));
+  
+      setTimeout(() => {
+        globe
+        .pointOfView({ lat: 55.7558, lng: 37.6176, altitude: 2 }) // Москва
+
+          .pathTransitionDuration(1000)
+      });
+  
+    </script>
+  </body>

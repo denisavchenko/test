@@ -1,0 +1,47 @@
+{
+	"folders": [
+		{
+			"name": "_code2",
+			"path": "."
+		},
+		{
+			"name": "_GLOBUS_FINAL",
+			"path": "../_GLOBUS_FINAL"
+		},
+		{
+			"name": "main_folder",
+			"path": "../main_folder"
+		},
+		{
+			"name": "KARTA",
+			"path": "E:/KARTA"
+		},
+		{
+			"name": "YNDX_TEST",
+			"path": "C:/Users/sdi20/Desktop/YNDX_TEST"
+		},
+		{
+			"name": "MGIMO",
+			"path": "../MGIMO"
+		},
+		{
+			"name": "_globus",
+			"path": "../_globus"
+		},
+		{
+			"name": "_test_map",
+			"path": "../_test_map"
+		},
+		{
+			"name": "main",
+			"path": "../main"
+		},
+		{
+			"name": "_test_globus",
+			"path": "../_test_globus"
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "_code2"
+	}
+}

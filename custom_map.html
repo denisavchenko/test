@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>denisavchenko</title>
+    <link rel="stylesheet" href="fonts/fonts">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="//unpkg.com/globe.gl"></script>
+    <script src="//unpkg.com/d3-dsv"></script>
+    <script src="//unpkg.com/index-array-by"></script>
+</head>
+
+<body>
+
+
+    <header class="header">
+        <div class="header-top">
+            <div class="container">
+                <div class="header-top-row">
+                    <div class="header-top-left">
+                        DENISAVCHENKO
+                    </div>
+                    <div class="header-top-right">
+                        <a href="index.html">Способы визуализации</a>
+                        <a href="works.html">Примеры работ</a>
+                        <a href="about.html">О проекте</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+</header>
+
+    <div>
+        <h2>Добавить города и население</h2>
+        <form id="cityForm">
+            <label for="city">Город:</label>
+            <input type="text" id="city" required>
+            <label for="population">Численность населения:</label>
+            <input type="number" id="population" required>
+            <button type="submit">Добавить</button>
+        </form>
+    </div>
+
+    <div>
+        <h2>Построить линию между двумя городами</h2>
+        <form id="arcForm">
+            <label for="city1">Первый город:</label>
+            <input type="text" id="city1" required>
+            <label for="city2">Второй город:</label>
+            <input type="text" id="city2" required>
+            <button type="submit">Построить</button>
+        </form>
+    </div>
+
+
+    <div id="controls">
+        <input type="text" id="regionInput" placeholder="Введите регион">
+        <input type="number" id="populationInput" placeholder="Численность населения">
+        <button id="addRegionButton">Добавить регион</button>
+    </div>
+
+
+    <div id="globeViz" style="height: 500px;"></div>
+
+    <script>
+        const myGlobe = Globe()
+            (document.getElementById('globeViz'))
+            .pointOfView({ lat: 55.7558, lng: 37.6176, altitude: 2 }) // Москва
+            .globeImageUrl('webgl/img/map_texture6.jpg') // Убедитесь, что изображение шара корректное
+            .backgroundColor('#FFFFFF') // Установка цвета фона на белый
+            .showAtmosphere(false); // Отключение атмосферы, чтобы избежать свечения
+
+        const cities = []; // Массив для хранения данных о городах
+        const arcs = []; // Массив для хранения данных о линиях
+        const russiaRegionData = [
+            {
+                name: "Херсонская область",
+                coordinates: [
+                    [33.585872650000056, 47.577014923000036],
+                    [33.599632263000046, 47.481929779000041],
+                    [34.200028331000055, 47.511062748000029],
+                    [34.293315888000052, 47.259265900000059],
+                    [34.488537978000068, 47.331314298000052],
+                    [34.586502225000061, 47.03304932900005],
+                    [34.732194785000047, 46.962021950000064],
+                    [34.755037611000034, 46.790700757000081],
+                    [34.621787795000046, 46.718365143000028],
+                    [34.705344784000033, 46.586372177000044],
+                    [35.02947869500008, 46.480984164000063],
+                    [35.093158292000055, 46.329810698000074],
+                    [34.962341750000064, 46.273196519000066],
+                    [34.933753813000067, 45.816440281000041],
+                    [34.929708704000063, 45.751810616000057],
+                    [33.812868775000027, 46.095205836000048],
+                    [33.494024928000044, 45.926403916000027],
+                    [33.412622462000058, 45.990815417000078],
+                    [31.744140253000069, 46.333347887000059],
+                    [31.705297722000068, 46.543774091000046],
+                    [31.99847221400006, 46.642639160000044],
+                    [32.111263275000056, 46.717178345000036],
+                    [32.241577149000079, 46.825347900000054],
+                    [32.52517720000003, 46.848177500000077],
+                    [32.531023100000027, 47.003804],
+                    [32.717616600000042, 47.031464700000072],
+                    [32.671494199000051, 47.198031503000038],
+                    [32.809909795000067, 47.221606652000048],
+                    [32.824716, 47.139094700000044],
+                    [33.178722382000046, 47.229309082000043],
+                    [33.072227478000059, 47.438213348000033],
+                    [33.128433227000073, 47.554401398000039],
+                    [33.327342987000065, 47.466472625000051],
+                    [33.471012115000065, 47.556709289000025],
+                    [33.585872650000056, 47.577014923000036]
+                ]
+            }
+        ];
+
+
+        russiaRegionData
+
+        // Функция для добавления региона на карту
+        function addRegion(regionName, population) {
+            const region = russiaRegionData.find(region => region.name === regionName);
+
+            if (region) {
+                // Преобразование данных в формат, подходящий для Globe.gl
+                const polygonData = {
+                    type: 'Feature',
+                    geometry: {
+                        type: 'Polygon',
+                        coordinates: [region.coordinates]
+                    },
+                    properties: {
+                        name: region.name,
+                        population: population
+                    }
+                };
+
+                myGlobe
+                    .polygonsData([polygonData]) // Добавляем полигон на карту
+                    .polygonCapColor('blue') // Цвет полигона
+                    .polygonSideColor(() => 'rgba(255, 255, 255, 0.3)') // Полупрозрачная сторона полигона
+                    .polygonStrokeColor('black') // Цвет обводки полигона
+                    .polygonAltitude(0.02); // Высота полигона
+                
+                console.log(`Регион ${regionName} добавлен с численностью ${population}`);
+            } else {
+                console.log(`Регион ${regionName} не найден.`);
+            }
+        }
+
+        // Обработчик нажатия на кнопку
+        document.getElementById('addRegionButton').addEventListener('click', () => {
+            const regionName = document.getElementById('regionInput').value;
+            const population = document.getElementById('populationInput').value;
+
+            if (regionName) {
+                addRegion(regionName, population);
+            } else {
+                alert('Введите название региона.');
+            }
+        });
+
+
+        // Функция для получения координат города с использованием Google Maps Geocoding API
+        async function getCityCoordinates(cityName) {
+            const apiKey = 'AIzaSyA4qTKKhn2iR_8iSf3eaLpcT0-Zaxqdz0E'; // Замените на ваш ключ API
+            const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(cityName)}&key=${apiKey}`);
+            const data = await response.json();
+            if (data.results && data.results.length > 0) {
+                return {
+                    lat: data.results[0].geometry.location.lat,
+                    lng: data.results[0].geometry.location.lng
+                };
+            }
+            return null;
+        }
+
+        // Обработка формы и добавление данных на глобус
+        document.getElementById('cityForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const city = document.getElementById('city').value;
+            const population = parseInt(document.getElementById('population').value);
+
+            if (!city || isNaN(population)) return;
+
+            const coord = await getCityCoordinates(city);
+
+            if (coord) {
+                cities.push({
+                    lat: coord.lat,
+                    lng: coord.lng,
+                    size: population / 1000000, // Уменьшите масштаб для удобства отображения
+                    color: 'red'
+                });
+
+                myGlobe.pointsData(cities);
+            } else {
+                alert('Город не найден. Пожалуйста, проверьте название.');
+            }
+
+            // Очистка формы
+            document.getElementById('city').value = '';
+            document.getElementById('population').value = '';
+        });
+
+        // Обработка формы и добавление линии между двумя городами
+        document.getElementById('arcForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const city1 = document.getElementById('city1').value;
+            const city2 = document.getElementById('city2').value;
+
+            const coord1 = await getCityCoordinates(city1);
+            const coord2 = await getCityCoordinates(city2);
+
+            if (coord1 && coord2) {
+                arcs.push({
+                    startLat: coord1.lat,
+                    startLng: coord1.lng,
+                    endLat: coord2.lat,
+                    endLng: coord2.lng,
+                    color: 'blue', // Цвет линии
+                    width: 2 // Толщина линии
+                });
+
+                myGlobe.arcsData(arcs);
+            } else {
+                alert('Один или оба города не найдены. Пожалуйста, проверьте названия.');
+            }
+
+            // Очистка формы
+            document.getElementById('city1').value = '';
+            document.getElementById('city2').value = '';
+        });
+    </script>
+</body>
+</html>

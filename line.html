@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>denisavchenko</title>
+    <link rel="stylesheet" href="fonts/fonts">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="//unpkg.com/globe.gl"></script>
+    <script src="//unpkg.com/d3-dsv"></script>
+    <script src="//unpkg.com/index-array-by"></script>
+</head>
+
+<body>
+
+  <header class="header">
+    <div class="header-top">
+        <div class="container">
+            <div class="header-top-row">
+                <div class="header-top-left">
+                    DENISAVCHENKO
+                </div>
+                <div class="header-top-right">
+                    <a href="index.html">Способы визуализации</a>
+                    <a href="works.html">Примеры работ</a>
+                    <a href="about.html">О проекте</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+    <div id="globeViz"></div>
+
+    <script>
+        const COUNTRY = 'Russia'; // Фильтрация по России
+        const OPACITY = 0.5;
+
+        const myGlobe = Globe()
+            (document.getElementById('globeViz'))
+
+            .globeImageUrl('webgl/img/map_texture6.jpg') // Убедитесь, что изображение шара корректное
+            .backgroundColor('#FFFFFF') // Установка цвета фона на белый
+            .showAtmosphere(false) // Отключение атмосферы, чтобы избежать свечения
+            .pointOfView({ lat: 55.7558, lng: 37.6176, altitude: 2 }) // Москва
+            .arcLabel(d => `${d.airline}: ${d.srcIata} &#8594; ${d.dstIata}`)
+            .arcStartLat(d => +d.srcAirport.lat)
+            .arcStartLng(d => +d.srcAirport.lng)
+            .arcEndLat(d => +d.dstAirport.lat)
+            .arcEndLng(d => +d.dstAirport.lng)
+            .arcDashLength(0.25)
+            .arcDashGap(1)
+            .arcDashInitialGap(() => Math.random())
+            .arcDashAnimateTime(7000)
+            .arcColor(d => [`rgba(0, 44, 210, ${OPACITY})`, `rgba(0, 44, 210, ${OPACITY})`])
+            .arcsTransitionDuration(0)
+            .pointColor(() => 'orange')
+            .pointAltitude(0)
+            .pointRadius(0.02)
+            .pointsMerge(true);
+
+        // Загрузка данных
+        const airportParse = ([airportId, name, city, country, iata, icao, lat, lng, alt, timezone, dst, tz, type, source]) => ({ airportId, name, city, country, iata, icao, lat, lng, alt, timezone, dst, tz, type, source });
+        const routeParse = ([airline, airlineId, srcIata, srcAirportId, dstIata, dstAirportId, codeshare, stops, equipment]) => ({ airline, airlineId, srcIata, srcAirportId, dstIata, dstAirportId, codeshare, stops, equipment});
+
+        Promise.all([
+            fetch('https://raw.githubusercontent.com/jpatokal/openflights/master/data/airports.dat').then(res => res.text())
+                .then(d => d3.csvParseRows(d, airportParse)),
+            fetch('https://raw.githubusercontent.com/jpatokal/openflights/master/data/routes.dat').then(res => res.text())
+                .then(d => d3.csvParseRows(d, routeParse))
+        ]).then(([airports, routes]) => {
+
+            const byIata = indexBy(airports, 'iata', false);
+
+            const filteredRoutes = routes
+                .filter(d => byIata.hasOwnProperty(d.srcIata) && byIata.hasOwnProperty(d.dstIata)) // исключаем неизвестные аэропорты
+                .filter(d => d.stops === '0') // только прямые рейсы
+                .map(d => Object.assign(d, {
+                    srcAirport: byIata[d.srcIata],
+                    dstAirport: byIata[d.dstIata]
+                }))
+                .filter(d => d.srcAirport.country === COUNTRY && d.dstAirport.country === COUNTRY); // международные рейсы из страны
+
+            myGlobe
+                .pointsData(airports)
+                .arcsData(filteredRoutes);
+        });
+
+
+    </script>
+</body>
+</html>

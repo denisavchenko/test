@@ -1,0 +1,293 @@
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+  display: block;
+}
+body {
+  line-height: 1;
+    font-family: 'Roboto';
+}
+ol, ul {
+  list-style: none;
+}
+blockquote, q {
+  quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+  content: '';
+  content: none;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+
+
+.container_back {
+  max-width: 1400px;
+  margin: 0 auto;
+  background-color: #FAFAFA;
+}
+
+.container{
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+
+
+
+/* Header start */
+
+
+
+
+.header-top {
+  background-color: #0057FE;
+  padding: 25px 0;
+}
+
+
+
+.header-top-row {
+  display: flex;
+  align-items: center;
+  color: #fff;
+}
+
+.header-top-row a {
+  color: #fff;
+}
+
+.header-top-left {
+  display: flex;
+  align-items: center;
+  font-size: 25px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.header-top-left a {
+  display: flex;
+  align-items: center;
+  font-size: 25px;
+  text-decoration: none;
+}
+
+.header-top-right {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  text-decoration: none;
+  margin-right: 25px;
+  font-size: 25px;
+
+}
+
+.header-top-right a {
+  color: #fff;
+  text-decoration: none;
+  transition: color 0.3s, text-decoration 0.3s;
+}
+
+.header-top-right a:hover {
+  color: #000000;
+  text-decoration: underline;
+}
+
+
+
+
+
+
+
+
+.header-top-right a {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  text-decoration: none;
+  margin-left: 25px;
+  font-size: 18px;
+
+}
+/* Header end */
+
+/*
+.container_gallary_main {
+  margin-top: 45px;
+}
+*/
+
+.container_back {
+  max-width: 1400px;
+  margin: 0 auto;
+  background-color: #FAFAFA;
+  position: absolute; 
+  left: 50%; 
+  transform: translateX(-50%); 
+  width: 1400px; 
+  min-height: 100%; 
+  z-index: -1;
+}
+
+.container_gallary_header {
+  font-size: 35px;
+  color:  #0057FE;
+  font-weight: bold;
+  margin-top: 45px;
+}
+
+.container_gallary_body {
+  font-size: 16px;
+  margin-top: 15px;
+}
+
+.gallary_item {
+  display: flex;
+  margin-top: 15px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.item {
+  flex-basis: 222px;
+  margin-top: 5px;
+
+}
+
+.item img {
+  width: 100%;
+
+}
+
+.item_body_header {
+  font-size: 18px;
+  margin-top: 10px;
+  font-weight: bold;
+  font-family: 'Roboto';
+}
+
+.item_body_body {
+  font-size: 14px;
+  margin-top: 10px;
+  font-style: normal;
+  font-weight: 300;
+  font-family: 'Roboto';
+}
+
+
+
+
+
+
+
+
+
+.hover-effect-scale {
+  list-style:none;
+  margin: 0 auto;
+  width: 100%;
+  text-align: center;
+  padding: 0;
+  
+}
+
+
+.hover-effect-scale li {
+  position: relative;
+  overflow: hidden;
+}
+
+.hover-effect-scale li a {
+  display: block;
+  text-decoration: none;
+  padding: 10px 25px;
+  color: #000000;
+  background: #ffffff;
+  margin: 0 auto;
+  transition: all 0.4s ease-in-out;
+}
+
+
+.hover-effect-scale li a:hover {
+  background: #454545;
+  color: #fff;
+}
+
+/* Выезжающий блок с текстом */ 
+.hover-effect-scale li > div {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+.hover-effect-scale li:hover > div {
+  position: absolute;
+  overflow: hidden;
+  top: 0;
+  left: 0;
+}
+
+.hover-effect-scale li div {
+  opacity: 0;
+  background-color: rgba(255, 255, 255, 0.35); /* Фон блока при наведении */
+  transition: all 0.5s ease-in-out;
+  color: #fff;
+}
+
+
+.hover-effect-scale li img {
+  transition: all 0.2s linear;
+}
+
+.hover-effect-scale li:hover div {
+  opacity: 1;
+}
+
+
+
+
+#globeViz { position: fixed; }
+
+
+
+.tooltip {
+  position: absolute;
+  background: white;
+  border: 1px solid #ccc;
+  padding: 5px;
+  border-radius: 3px;
+  pointer-events: none;
+  display: none;
+  font-size: 12px;
+}
+
+
+
+
+

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>denisavchenko</title>
+    <link rel="stylesheet" href="fonts/fonts">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="//unpkg.com/globe.gl"></script>
+    <script src="//unpkg.com/d3-dsv"></script>
+    <script src="//unpkg.com/index-array-by"></script>
+</head>
+
+<body>
+
+    <header class="header">
+        <div class="header-top">
+            <div class="container">
+                <div class="header-top-row">
+                    <div class="header-top-left">
+                        DENISAVCHENKO
+                    </div>
+                    <div class="header-top-right">
+                        <a href="index.html">Способы визуализации</a>
+                        <a href="works.html">Примеры работ</a>
+                        <a href="about.html">О проекте</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+</header>
+
+
+    <div id="globeViz"></div>
+
+    <script>
+        // Данные о городах
+        const cityData = [
+            { lat: 55.7558, lng: 37.6173, name: "Moscow", population: 12506468 },
+            { lat: 59.9343, lng: 30.3351, name: "Saint Petersburg", population: 5384342 },
+            { lat: 55.0084, lng: 82.9357, name: "Novosibirsk", population: 1620162 },
+            { lat: 54.7388, lng: 55.9721, name: "Ufa", population: 1122874 },
+            { lat: 56.0153, lng: 92.8932, name: "Krasnoyarsk", population: 1095283 }
+        ];
+
+        // Генерация данных для колец на основе данных о городах
+        const gData = cityData.map(city => ({
+            lat: city.lat,
+            lng: city.lng,
+            maxR: Math.random() * 5 + 5, // Максимальный радиус кольца
+            propagationSpeed: (Math.random() - 0.5) * 5 + 5, // Скорость распространения
+            repeatPeriod: Math.random() * 1000 + 200 // Период повторения
+        }));
+
+        const colorInterpolator = t => `rgba(0, 44, 210,${Math.sqrt(1-t)})`;
+
+        const myGlobe = Globe()
+            (document.getElementById('globeViz'))
+            .pointOfView({ lat: 55.7558, lng: 37.6176, altitude: 2 }) // Москва
+            .globeImageUrl('webgl/img/map_texture6.jpg') // Убедитесь, что изображение шара корректное
+            .backgroundColor('#FFFFFF') // Установка цвета фона на белый
+            .showAtmosphere(false) // Отключение атмосферы, чтобы избежать свечения
+            .ringsData(gData) // Добавление данных для колец
+            .ringColor(() => colorInterpolator) // Цвет колец
+            .ringMaxRadius('maxR') // Максимальный радиус
+            .ringPropagationSpeed('propagationSpeed') // Скорость распространения
+            .ringRepeatPeriod('repeatPeriod'); // Период повторения
+    </script>
+</body>
+</html>
